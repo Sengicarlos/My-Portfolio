@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation"; // For active link detection
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Shadcn button import
 import { useTheme } from "@/components/theme-provider"; // Corrected path
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("/");
 
   const links = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About Me" },
-    { href: "/portfolio", label: "My Projects" },
+    { href: "/projects", label: "My Projects" },
     { href: "/contact", label: "Contact Me" },
   ];
 
@@ -22,8 +22,10 @@ export default function Nav() {
   const { theme, setTheme } = useTheme(); // Shadcn theme hook
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
+  const pathname = usePathname(); // Get current path
+
   return (
-  <nav className="w-full bg-sidebar text-sidebar-foreground px-6 py-4 flex justify-between items-center relative z-50">
+    <nav className="w-full bg-sidebar text-sidebar-foreground px-6 py-4 flex justify-between items-center fixed top-0 left-0 z-50">
       {/* Logo */}
       <div className="text-xl font-bold">
         <Link href="/">MyPortfolio</Link>
@@ -31,26 +33,32 @@ export default function Nav() {
 
       {/* Desktop Links */}
       <ul className="hidden md:flex space-x-4 items-center">
-          {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
+        {links.map((link) => {
+          const isActive =
+            link.href === "/"
+              ? pathname === link.href
+              : pathname.startsWith(link.href);
+
+          return (
+            <li key={link.href}>
+              <Link
+                href={link.href}
                 className={`px-3 py-2 rounded transition-all duration-200 ${
-                activeLink === link.href
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-input/50 hover:px-4 hover:py-3"
-              }`}
-              onClick={() => setActiveLink(link.href)}
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
+                  isActive
+                    ? "bg-primary text-primary-foreground font-semibold"
+                    : "hover:bg-input/50 hover:px-4 hover:py-3"
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          );
+        })}
 
         {/* CV Button */}
         <li>
-          <Link href="/cv.pdf" target="_blank">
-            <Button variant="default" className="ml-2">
+          <Link href="/view-cv">
+            <Button variant="default" className="ml-2  bg-gray-700 hover:bg-gray-500 text-0.5xl" >
               View CV
             </Button>
           </Link>
@@ -70,7 +78,6 @@ export default function Nav() {
 
       {/* Mobile controls: theme toggle then hamburger */}
       <div className="md:hidden flex items-center gap-2">
-        {/* Theme toggle shown on mobile before hamburger */}
         <Button variant="outline" className="p-2" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
         </Button>
@@ -86,37 +93,36 @@ export default function Nav() {
         }`}
       >
         <ul className="flex flex-col items-center">
-          {links.map((link) => (
-            <li key={link.href} className="border-b border-sidebar-border w-full text-center">
-              <Link
-                href={link.href}
-                className={`block px-6 py-3 transition-all duration-200 ${
-          activeLink === link.href ? "bg-primary text-primary-foreground" : "hover:bg-input/50"
-                }`}
-                onClick={() => {
-                  setActiveLink(link.href);
-                  setIsOpen(false);
-                }}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          {links.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? pathname === link.href
+                : pathname.startsWith(link.href);
+
+            return (
+              <li key={link.href} className="border-b border-sidebar-border w-full text-center">
+                <Link
+                  href={link.href}
+                  className={`block px-6 py-3 transition-all duration-200 ${
+                    isActive
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "hover:bg-input/50"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
 
           {/* CV Button */}
           <li className="border-b border-sidebar-border w-full flex justify-center mt-2">
-            <Link href="/cv.pdf" target="_blank" onClick={() => setIsOpen(false)}>
-              <Button variant="default" className="w-3/4 text-center">
+            <Link href="/cv.pdf" onClick={() => setIsOpen(false)}>
+              <Button variant="default" className="w-4/4 text-left my-2 bg-gray-700 hover:bg-gray-500 text-0.5xl">
                 View CV
               </Button>
             </Link>
-          </li>
-
-          {/* Theme Toggle */}
-          <li className="flex justify-center mt-2 w-full">
-            <Button variant="outline" onClick={toggleTheme}>
-              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-            </Button>
           </li>
         </ul>
       </div>

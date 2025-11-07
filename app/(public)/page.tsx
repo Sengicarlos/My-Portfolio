@@ -48,49 +48,51 @@ export default function HomePage() {
   }, [hoveredImage]);
 
   return (
-    <>
+    <main className="pt-[4.5rem]">
       {/* Hero Section */}
-  <div className="w-full h-screen bg-background relative overflow-hidden flex justify-center items-center">
-        {images.map((img) => (
-          <div
-            key={img.id}
-            className={`absolute top-0 left-0 w-full h-full transition-all duration-700 ease-in-out overflow-hidden ${
-              hoveredImage === img.id
-                ? "clip-full z-20"
-                : activeImage === img.id
-                ? `${img.defaultClip}-active z-20`
-                : `${img.defaultClip} z-10`
-            }`}
-            onMouseEnter={() => setHoveredImage(img.id)}
-            onMouseLeave={() => setHoveredImage(null)}
-          >
-            <img
-              src={img.src}
-              alt={`Hero ${img.id}`}
-              className="w-full h-full object-cover object-center transition-transform duration-700 ease-in-out"
-              style={{ willChange: "transform" }}
-            />
-          </div>
-        ))}
+      <section className="h-[calc(100vh-4.5rem)] bg-background relative">
+        <div className="absolute inset-0 flex justify-center items-center">
+          {images.map((img) => (
+            <div
+              key={img.id}
+              className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                hoveredImage === img.id
+                  ? "clip-full z-20"
+                  : activeImage === img.id
+                  ? `${img.defaultClip}-active z-20`
+                  : `${img.defaultClip} z-10`
+              }`}
+              onMouseEnter={() => setHoveredImage(img.id)}
+              onMouseLeave={() => setHoveredImage(null)}
+            >
+              <img
+                src={img.src}
+                alt={`Hero ${img.id}`}
+                className="absolute w-full h-full object-cover transition-transform duration-700 ease-in-out"
+                style={{ willChange: "transform" }}
+              />
+            </div>
+          ))}
 
-        {/* Overlay text */}
-  <div className="relative z-30 text-center text-foreground space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Welcome to My Portfolio
-          </h1>
-          <p className="text-lg md:text-xl">Explore my projects and skills</p>
+          {/* Overlay text */}
+          <div className="relative z-30  text-center text-foreground space-y-6">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">
+              Welcome To My Portfolio
+            </h1>
+            <p className="text-lg md:text-xl">Explore my projects and skills</p>
 
-          {/* Buttons */}
-          <div className="flex justify-center space-x-4 mt-4">
-            <Link href="/about">
-              <Button variant="default">About Me</Button>
-            </Link>
-            <Link href="/contact">
-              <Button variant="default">Hire Me</Button>
-            </Link>
+            {/* Buttons */}
+            <div className="flex justify-center space-x-4 mt-4">
+              <Link href="/about">
+                <Button variant="default">About Me</Button>
+              </Link>
+              <Link href="/contact">
+                <Button variant="default">Hire Me</Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Featured Projects Section */}
       <section className="w-full bg-background py-20 px-4 md:px-12">
@@ -118,7 +120,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                 <p className="text-muted-foreground mb-4">{project.description}</p>
                 <Button asChild>
-                  <Link href={project.link} target="_blank">
+                  <Link href='#' target="_blank">
                     View Project
                   </Link>
                 </Button>
@@ -127,6 +129,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-    </>
+    </main>
   );
 }
